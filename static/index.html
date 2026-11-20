@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My FastAPI Login</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; background-color: #f0f2f5; }
+        .box { border: 1px solid #ccc; padding: 30px; border-radius: 8px; width: 300px; background: white; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h2 { text-align: center; margin-top: 0; }
+        input { width: 100%; margin-bottom: 15px; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #0056b3; }
+        #message { margin-top: 15px; color: green; text-align: center; font-weight: bold; }
+        #error { margin-top: 15px; color: red; text-align: center; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username (e.g., tony)">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <div id="message"></div>
+        <div id="error"></div>
+    </div>
+
+    <script>
+        async function login() {
+            const user = document.getElementById("username").value;
+            const pass = document.getElementById("password").value;
+            
+            // Clear old messages
+            document.getElementById("message").innerText = "";
+            document.getElementById("error").innerText = "";
+
+            // FastAPI OAuth2 requires form data, not JSON
+            const formData = new URLSearchParams();
+            formData.append("username", user);
+            formData.append("password", pass);
+
+            try {
+                // 1. Send credentials to get the token
+                const response = await fetch("/token", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log("Your JWT is:", data.access_token);
+                    
+                    // 2. Use the token to fetch protected user data
+                    const meResponse = await fetch("/users/me", {
+                        headers: { "Authorization": `Bearer ${data.access_token}` }
+                    });
+                    const meData = await meResponse.json();
+                    
+                    // Show success message
+                    document.getElementById("message").innerText = `Welcome, ${meData.username}! You are logged in from the database.`;
+                    
+                } else {
+                    document.getElementById("error").innerText = "Invalid username or password.";
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById("error").innerText = "Server error. Is the backend running?";
+            }
+        }
+    </script>
+</body>
+</html>
