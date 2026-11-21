@@ -26,7 +26,7 @@ def verify_password(plain_password, hashlib_password):
 fake_users_db = {
     "alice": {
         "username": "alice",
-        "hashlib_password": "a71a7c7011f53a1bab3642ec2ce12593f05230ace8de1e3e7645f69efac1443d"
+        "hashlib_password":"a71a7c7011f53a1bab3642ec2ce12593f05230ace8de1e3e7645f69efac1443d"
 }
 }
 # 4. Pydantic Models
