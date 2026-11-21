@@ -6,7 +6,8 @@ import hashlib
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
-from jose import JWTError, jwt
+import jwt
+from jwt import PyJWTError as JWTError
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 # 1. Configuration
