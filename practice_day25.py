@@ -7,8 +7,8 @@ from pydantic import BaseModel
 # from passlib.context import CryptContext
 # Add these lines:
 import hashlib
-from jose import JWTError, jwt
-
+import jwt
+from jwt import PyJWTError as JWTError
 # 1. Configuration
 SECRET_KEY = "my-super-secret-key-change-this-in-production"
 ALGORITHM = "HS256"
